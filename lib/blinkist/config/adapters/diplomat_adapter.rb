@@ -7,6 +7,8 @@ module Blinkist
       def initialize(env, app_name)
         super env, app_name
 
+        @items_cache = {}
+
         Diplomat.configure do |config|
           config.url = "http://172.17.0.1:8500"
         end
@@ -15,7 +17,9 @@ module Blinkist
       def get(key, default=nil, scope: nil)
         scope ||= @app_name
 
-        Diplomat::Kv.get "#{scope}/#{key}"
+        diplomat_key = "#{scope}/#{key}"
+
+        @items_cache.fetch(diplomat_key, Diplomat::Kv.get(diplomat_key))
       rescue Diplomat::KeyNotFound
         default
       end
