@@ -1,8 +1,43 @@
 # Blinkist::Config
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/blinkist/config`. To experiment with that code, run `bin/console` for an interactive prompt.
+This GEM allows you to access configuration stores with different adapters. Here're some examples of usage:
 
-TODO: Delete this and the text above, and describe your gem
+### Using the ENV
+```ruby
+# First setup the Config to use the ENV as config store
+Blinkist::Config.env = ENV["RAILS_ENV"]
+Blinkist::Config.app_name = ENV["APP_NAME"]
+Blinkist::Config.adapter_type = :env
+
+my_config_value = Blinkist::Config.get "some/folder/config"
+
+# This is being translated to ENV["SOME_FOLDER_CONFIG"]
+```
+
+### Using Diplomat & Consul
+
+If you want to use Consul's key value store[https://www.consul.io/](https://www.consul.io/), simply use our diplomat adapter [https://github.com/WeAreFarmGeek/diplomat](https://github.com/WeAreFarmGeek/diplomat)
+
+```ruby
+# First setup the Config to use the ENV as config store
+Blinkist::Config.env = ENV["RAILS_ENV"]
+Blinkist::Config.app_name = ENV["APP_NAME"]
+Blinkist::Config.adapter_type = ENV["CONSUL_AVAILABLE"] == "true" ? :diplomat : :env
+
+my_config_value = Blinkist::Config.get "some/folder/config"
+
+# This is will try to get a value from Consul's KV store at "APP_NAME/some/folder/config"
+```
+
+### Using Diplomat with a folder scope
+```ruby
+# Here we setting a scope outside of the app
+
+my_config_value = Blinkist::Config.get "another/config", scope: "global"
+
+# This is will try to get a value from Consul's KV store at "global/another/config"
+```
+
 
 ## Installation
 
@@ -12,23 +47,35 @@ Add this line to your application's Gemfile:
 gem 'blinkist-config'
 ```
 
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install blinkist-config
-
 ## Usage
 
-TODO: Write usage instructions here
+You have to set up the GEM before you can use it. The basic setup requires this
+
+```ruby
+Blinkist::Config.env = "production" || "test" || "development"
+Blinkist::Config.app_name = "your_app_name" # Used only with diplomat adapter
+Blinkist::Config.adapter_type = :diplomat || :env
+```
+
+It's best to drop a `config.rb` into your app and load this file before every other file. In Rails you can link it into your `application.rb`
+
+```ruby
+require_relative "boot"
+require_relative "config"
+
+require "rails"
+# ...
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+You can build this project easily with (docker compose)[https://docs.docker.com/compose/].
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```
+docker-compose run rake
+```
+
+This will execute rake and run all specs by auto correcting the code with rubocop.
 
 ## Contributing
 
