@@ -9,6 +9,14 @@ Lint/ParenthesesAsGroupedExpression:
   Exclude:
     - 'spec/**/*'
 
+Metrics/ModuleLength:
+  Exclude:
+    - "**/*_spec.rb"
+
+Metrics/BlockLength:
+  Exclude:
+    - "**/*_spec.rb"
+
 Style/BlockDelimiters:
   Enabled: true
   Exclude:
