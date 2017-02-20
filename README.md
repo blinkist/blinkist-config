@@ -7,7 +7,7 @@ This GEM allows you to access configuration stores with different adapters. Here
 ```ruby
 # First setup the Config to use the ENV as config store
 Blinkist::Config.env = ENV["RAILS_ENV"]
-Blinkist::Config.app_name = ENV["APP_NAME"]
+Blinkist::Config.app_name = "my_nice_app"
 Blinkist::Config.adapter_type = :env
 
 my_config_value = Blinkist::Config.get "some/folder/config"
@@ -35,12 +35,12 @@ The GEM expects consul to listen to `http://172.17.0.1:8500`
 ```ruby
 # First setup the Config to use the ENV as config store
 Blinkist::Config.env = ENV["RAILS_ENV"]
-Blinkist::Config.app_name = ENV["APP_NAME"]
+Blinkist::Config.app_name = "my_nice_app"
 Blinkist::Config.adapter_type = ENV["CONSUL_AVAILABLE"] == "true" ? :diplomat : :env
 
 my_config_value = Blinkist::Config.get "some/folder/config"
 
-# This is will try to get a value from Consul's KV store at "APP_NAME/another/config"
+# This is will try to get a value from Consul's KV store at "my_nice_app/some/folder/config"
 ```
 
 ### Using Diplomat with a folder scope
@@ -49,7 +49,7 @@ my_config_value = Blinkist::Config.get "some/folder/config"
 
 my_config_value = Blinkist::Config.get "another/config", scope: "global"
 
-# This will replace APP_NAME with `global` and try to resolve "global/another/config"
+# This will replace `my_nice_app` with `global` and try to resolve "global/another/config"
 # With :env the scope will simply be ignored
 ```
 
