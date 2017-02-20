@@ -69,7 +69,7 @@ require "rails"
 
 ## Development
 
-You can build this project easily with (docker compose)[https://docs.docker.com/compose/].
+You can build this project easily with [docker compose](https://docs.docker.com/compose/).
 
 ```
 docker-compose run rake
