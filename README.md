@@ -16,7 +16,11 @@ my_config_value = Blinkist::Config.get "some/folder/config"
 
 ### Using Diplomat & Consul
 
-If you want to use Consul's key value store[https://www.consul.io/](https://www.consul.io/), simply use our diplomat adapter [https://github.com/WeAreFarmGeek/diplomat](https://github.com/WeAreFarmGeek/diplomat)
+If you want to use Consul's key value store, simply use our diplomat adapter.
+
+* [https://www.consul.io/](https://www.consul.io/)
+* [https://github.com/WeAreFarmGeek/diplomat](https://github.com/WeAreFarmGeek/diplomat)
+
 
 ```ruby
 # First setup the Config to use the ENV as config store
