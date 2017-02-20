@@ -30,6 +30,7 @@ If you want to use Consul's key value store, simply use our diplomat adapter.
 * [https://www.consul.io/](https://www.consul.io/)
 * [https://github.com/WeAreFarmGeek/diplomat](https://github.com/WeAreFarmGeek/diplomat)
 
+The GEM expects consul to listen to `http://172.17.0.1:8500`
 
 ```ruby
 # First setup the Config to use the ENV as config store
