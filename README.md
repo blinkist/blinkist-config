@@ -59,7 +59,7 @@ my_config_value = Blinkist::Config.get "another/config", scope: "global"
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'blinkist-config'
+gem "blinkist-config"
 ```
 
 ## Usage
