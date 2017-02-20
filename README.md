@@ -3,6 +3,7 @@
 This GEM allows you to access configuration stores with different adapters. Here're some examples of usage:
 
 ### Using the ENV
+
 ```ruby
 # First setup the Config to use the ENV as config store
 Blinkist::Config.env = ENV["RAILS_ENV"]
@@ -12,6 +13,14 @@ Blinkist::Config.adapter_type = :env
 my_config_value = Blinkist::Config.get "some/folder/config"
 
 # This is being translated to ENV["SOME_FOLDER_CONFIG"]
+```
+
+### Having a default value
+
+```ruby
+my_config_value = Blinkist::Config.get "some/folder/config", "default value"
+
+# If ENV["SOME_FOLDER_CONFIG"] is nil, "default value" will be returned
 ```
 
 ### Using Diplomat & Consul
@@ -30,7 +39,7 @@ Blinkist::Config.adapter_type = ENV["CONSUL_AVAILABLE"] == "true" ? :diplomat : 
 
 my_config_value = Blinkist::Config.get "some/folder/config"
 
-# This is will try to get a value from Consul's KV store at "APP_NAME/some/folder/config"
+# This is will try to get a value from Consul's KV store at "APP_NAME/another/config"
 ```
 
 ### Using Diplomat with a folder scope
@@ -39,7 +48,8 @@ my_config_value = Blinkist::Config.get "some/folder/config"
 
 my_config_value = Blinkist::Config.get "another/config", scope: "global"
 
-# This is will try to get a value from Consul's KV store at "global/another/config"
+# This will replace APP_NAME with `global` and try to resolve "global/another/config"
+# With :env the scope will simply be ignored
 ```
 
 
