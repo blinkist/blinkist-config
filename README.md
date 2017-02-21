@@ -1,5 +1,10 @@
 # Blinkist::Config
 
+[![CircleCI](https://circleci.com/gh/blinkist/blinkist-config.svg?style=svg)](https://circleci.com/gh/blinkist/blinkist-config)
+[![Dependency Status](https://www.versioneye.com/user/projects/58abf0e4b4d2a20036950ef0/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58abf0e4b4d2a20036950ef0)
+[![Code Climate](https://codeclimate.com/github/blinkist/blinkist-config/badges/gpa.svg)](https://codeclimate.com/github/blinkist/blinkist-config)
+[![Test Coverage](https://codeclimate.com/github/blinkist/blinkist-config/badges/coverage.svg)](https://codeclimate.com/github/blinkist/blinkist-config/coverage)
+
 This GEM allows you to access configuration stores with different adapters. Here're some examples of usage:
 
 ### Using the ENV
@@ -91,6 +96,20 @@ docker-compose run rake
 ```
 
 This will execute rake and run all specs by auto correcting the code with rubocop.
+
+If you're ready to tag a new version, do this
+
+```
+docker-compose run gem bump -t -v major|minor|patch
+```
+
+To deploy to rubygems.org do this then
+
+```
+docker-compose run gem release
+```
+
+You'll have to have proper rights to access rubygems.org
 
 ## Contributing
 

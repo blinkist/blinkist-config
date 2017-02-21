@@ -10,11 +10,12 @@ services:
     volumes:
       - .:/app
   
-  bump:
+  gem:
     build:
       context: .
-    entrypoint: gem release #bump -p -t -v
+    entrypoint: gem
     volumes:
       - .:/app
       - ~/.gitconfig:/nonexistent/.gitconfig
       - ~/.ssh:/nonexistent/.ssh
+      - ~/.gem:/nonexistent/.gem

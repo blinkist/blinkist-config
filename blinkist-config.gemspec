@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Simple adapter based configuration handler (supports ENV and Consul/Diplomat).}
   spec.description   = %q{This GEM allows you to keep your configuration class-based by calling Blinkist::Config.get(...) instead of accessing the ENV directly. You can set up different types of adapters to connect to various configuration systems like your ENV or Consul's key-value-store.}
-  spec.homepage      = "https://www.blinkist.com"
+  spec.homepage      = "https://github.com/blinkist/blinkist-config"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
@@ -20,8 +20,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "byebug"
-  spec.add_development_dependency "rubocop"
+  spec.add_development_dependency "rubocop", '~> 0'
 
   spec.add_runtime_dependency "diplomat", "~> 1"
 end
