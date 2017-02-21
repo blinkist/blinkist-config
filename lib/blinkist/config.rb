@@ -8,8 +8,11 @@ module Blinkist
       attr_accessor :adapter_type, :logger, :env, :app_name
 
       def get(key, default = nil, scope: nil)
-        adapter ||= Adapter.instance_for adapter_type, env, app_name
         adapter.get(key, scope: scope) || default
+      end
+
+      def adapter
+        @adapter ||= Adapter.instance_for adapter_type, env, app_name
       end
     end
   end
