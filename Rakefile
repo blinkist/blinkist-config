@@ -3,8 +3,7 @@ require "rspec/core/rake_task"
 require "rubocop/rake_task"
 
 RuboCop::RakeTask.new do |task|
-	task.options = %w(-a)
-	task.patterns = %w(lib/**/*.rb spec/**/*.rb)
+  task.options = %w(-a)
 end
 
 RSpec::Core::RakeTask.new(:spec)
