@@ -1,12 +1,12 @@
 FROM ruby:2.3.1-slim
 
-ENV RAILS_ENV=production
+ENV RAILS_ENV=test
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV LC_CTYPE en_US.UTF-8
 
-ENV RUNTIME_PACKAGES pkg-config netcat supervisor nodejs git jq uuid-runtime libxslt1-dev build-essential libxml2-dev libxslt1-dev
+ENV RUNTIME_PACKAGES pkg-config git
 
 RUN mkdir /tmp/tmpapp
 WORKDIR /tmp/tmpapp

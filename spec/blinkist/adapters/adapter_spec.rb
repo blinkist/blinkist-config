@@ -14,6 +14,10 @@ describe Blinkist::Config::Adapter do
     expect(subject.instance_variable_get("@app_name")).to eq app_name
   end
 
+  describe "#get" do
+    it { expect { subject.get "some" }.to raise_error NotImplementedError }
+  end
+
   describe ".instance_for" do
     subject { described_class.instance_for type, env, app_name }
 
@@ -42,6 +46,12 @@ describe Blinkist::Config::Adapter do
 
         subject
       end
+    end
+
+    context "for type to not be supported" do
+      let(:type) { :something }
+
+      it { expect { subject }.to raise_error NotImplementedError }
     end
   end
 end

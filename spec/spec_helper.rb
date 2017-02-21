@@ -1,2 +1,6 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'blinkist/config'
+
+require "simplecov"
+SimpleCov.start
+
+require "blinkist/config"

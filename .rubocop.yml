@@ -1,9 +1,3 @@
-AllCops:
-  Exclude:
-    - '**/schema.rb'
-    - 'bin/**'
-    - 'vendor/**/*'
-
 Lint/ParenthesesAsGroupedExpression:
   Enabled: true
   Exclude:
