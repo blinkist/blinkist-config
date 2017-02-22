@@ -19,7 +19,11 @@ module Blinkist
 
         diplomat_key = "#{scope}/#{key}"
 
-        @items_cache.fetch(diplomat_key, Diplomat::Kv.get(diplomat_key))
+        unless @items_cache.key? diplomat_key
+          @items_cache[diplomat_key] = Diplomat::Kv.get(diplomat_key)
+        end
+
+        @items_cache[diplomat_key]
       rescue Diplomat::KeyNotFound
         default
       end

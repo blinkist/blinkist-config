@@ -1,10 +1,11 @@
 require "spec_helper"
 
 describe Blinkist::Config::DiplomatAdapter do
-  subject { described_class.new env, app_name }
+  subject { adapter }
 
   let(:env) { "test" }
   let(:app_name) { "my_test_app" }
+  let(:adapter) { described_class.new env, app_name }
 
   it "configures Diplomat" do
     subject
@@ -12,7 +13,7 @@ describe Blinkist::Config::DiplomatAdapter do
   end
 
   describe "#get" do
-    subject { super().get(key, default, scope: scope) }
+    subject { adapter.get(key, default, scope: scope) }
 
     let(:key) { "my/special/key" }
     let(:default) { "my fallback" }
@@ -32,7 +33,7 @@ describe Blinkist::Config::DiplomatAdapter do
     end
 
     context "when the key has being asked before" do
-      before { subject }
+      before { adapter.get(key, default, scope: scope) }
 
       it "doesn't call Diplomat a second time" do
         expect(Diplomat::Kv).to_not receive(:get)
