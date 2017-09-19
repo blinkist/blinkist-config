@@ -211,7 +211,7 @@ describe Blinkist::Config do
     end
 
     context "with a lambda strategy" do
-      let(:custom_lambda) { lambda {|*args| } }
+      let(:custom_lambda) { ->(*args) {} }
       let(:strategy) { custom_lambda }
 
       it "calls the lambda for error handling" do
@@ -240,5 +240,4 @@ describe Blinkist::Config do
       end
     end
   end
-
 end

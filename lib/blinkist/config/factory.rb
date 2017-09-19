@@ -12,7 +12,7 @@ module Blinkist
         case strategy
         when Symbol
           klass = @implementations[strategy] ||
-            raise(NotImplementedError, "Unknown strategy #{strategy} for #{@aspect}")
+                  raise(NotImplementedError, "Unknown strategy #{strategy} for #{@aspect}")
         when Class
           klass = strategy
         else
@@ -23,7 +23,7 @@ module Blinkist
           end
         end
 
-        return klass.new(@env, @app_name)
+        klass.new(@env, @app_name)
       end
     end
   end
