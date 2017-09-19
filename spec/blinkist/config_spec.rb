@@ -42,6 +42,97 @@ describe Blinkist::Config do
     end
   end
 
+  describe ".get!" do
+    let(:value)   { "1234" }
+    let(:scope)   { nil }
+    let(:adapter) { instance_double Blinkist::Config::Adapter }
+    let(:key)     { "some_valid_key" }
+
+    before do
+      allow(Blinkist::Config).to receive(:adapter).and_return(adapter)
+      allow(Blinkist::Config).to receive(:errors).and_return(:strict)
+      allow(adapter).to receive(:get).with(key, scope: scope).and_return(value)
+    end
+
+    context "when called with too many arguments" do
+      it "raises an error" do
+        expect { described_class.get!(1, 2, 3) }.to raise_error(ArgumentError, /wrong number of arguments/)
+      end
+    end
+
+    context "with a valid key" do
+      subject { described_class.get!(key) }
+
+      it { is_expected.to eq(value) }
+
+      context "and no scope" do
+        let(:scope) { nil }
+
+        subject { described_class.get!(key) }
+
+        it { is_expected.to eq(value) }
+      end
+
+      context "and a valid scope" do
+        let(:scope) { "some_other_scope" }
+
+        subject { described_class.get!(key, scope: scope) }
+
+        it { is_expected.to eq(value) }
+      end
+
+      context "and an invalid scope" do
+        let(:scope) { "some_valid_scope" }
+        let(:invalid) { "some_invalid_scope" }
+
+        before { allow(adapter).to receive(:get).with(key, scope: invalid).and_return(nil) }
+
+        subject { described_class.get!(key, scope: invalid) }
+
+        it "is expected to raise an error" do
+          expect { subject }.to raise_error(Blinkist::Config::ValueMissingError)
+        end
+
+        context "and a default value" do
+          let(:scope)   { "some_valid_scope" }
+          let(:default) { "default value" }
+
+          subject { described_class.get!(key, default, scope: invalid) }
+
+          it { is_expected.to eq(default) }
+        end
+      end
+    end
+
+    context "with an invalid key" do
+      let(:invalid) { "invalid_key" }
+
+      before { allow(adapter).to receive(:get).with(invalid, scope: scope).and_return(nil) }
+
+      subject { described_class.get!(invalid, scope: scope) }
+
+      it "is expected to raise an error" do
+        expect { subject }.to raise_error(Blinkist::Config::ValueMissingError)
+      end
+
+      context "and a default value" do
+        let(:default) { "default value" }
+
+        subject { described_class.get!("invalid_key", default) }
+
+        it { is_expected.to eq(default) }
+      end
+
+      context "and a default value of nil" do
+        let(:default) { nil }
+
+        subject { described_class.get!("invalid_key", default) }
+
+        it { is_expected.to eq(default) }
+      end
+    end
+  end
+
   describe ".adapter" do
     let(:fake_adapter) { instance_double Blinkist::Config::Adapter }
     let(:env) { "some_env" }

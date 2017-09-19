@@ -13,16 +13,33 @@ This GEM allows you to access configuration stores with different adapters. Here
 Blinkist::Config.env = ENV["RAILS_ENV"]
 Blinkist::Config.app_name = "my_nice_app"
 Blinkist::Config.adapter_type = :env
+Blinkist::Config.errors = :strict
 
-my_config_value = Blinkist::Config.get "some/folder/config"
+my_config_value = Blinkist::Config.get! "some/folder/config"
 
 # This is being translated to ENV["SOME_FOLDER_CONFIG"]
 ```
 
+### Error handling
+
+When configured with `Blinkist::Config.errors = :strict` (as recommended)
+reading a configuration entry for which the value is missing 
+(for example missing enviroment variables) will cause
+`Blinkist::Config::ValueMissingError` to be raised.
+
+There is also an alternative mode `Blinkist::Config.errors = :heuristic` which
+will raise exceptions only when `Blinkist::Config.env == "production"`.
+
+This alternative mode is also the default for compatibility.
+
 ### Having a default value
 
+If you don't want `Blinkist::Config.get!` to scream at you for missing
+configuration entries then you canprovide a default value as a second
+paramter to `get!`:
+
 ```ruby
-my_config_value = Blinkist::Config.get "some/folder/config", "default value"
+my_config_value = Blinkist::Config.get! "some/folder/config", "default value"
 
 # If ENV["SOME_FOLDER_CONFIG"] is nil, "default value" will be returned
 ```
@@ -42,7 +59,7 @@ Blinkist::Config.env = ENV["RAILS_ENV"]
 Blinkist::Config.app_name = "my_nice_app"
 Blinkist::Config.adapter_type = ENV["CONSUL_AVAILABLE"] == "true" ? :diplomat : :env
 
-my_config_value = Blinkist::Config.get "some/folder/config"
+my_config_value = Blinkist::Config.get! "some/folder/config"
 
 # This is will try to get a value from Consul's KV store at "my_nice_app/some/folder/config"
 ```
@@ -51,7 +68,7 @@ my_config_value = Blinkist::Config.get "some/folder/config"
 ```ruby
 # Here we setting a scope outside of the app
 
-my_config_value = Blinkist::Config.get "another/config", scope: "global"
+my_config_value = Blinkist::Config.get! "another/config", scope: "global"
 
 # This will replace `my_nice_app` with `global` and try to resolve "global/another/config"
 # With :env the scope will simply be ignored
