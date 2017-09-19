@@ -5,6 +5,12 @@ describe Blinkist::Config do
     expect(Blinkist::Config::VERSION).not_to be nil
   end
 
+  describe ".errors" do
+    subject { Blinkist::Config.errors }
+
+    it { is_expected.to eq :heuristic }
+  end
+
   describe ".get" do
     subject { described_class.get key, default, scope: scope }
 
