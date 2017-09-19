@@ -9,6 +9,7 @@ require_relative "config/error_handlers/production_only_error_handler"
 require_relative "config/error_handlers"
 require_relative "config/adapters/env_adapter"
 require_relative "config/adapters/diplomat_adapter"
+require_relative "config/adapters"
 
 module Blinkist
   class Config
@@ -20,7 +21,8 @@ module Blinkist
       end
 
       def adapter
-        @adapter ||= Adapter.instance_for adapter_type, env, app_name
+        @adapter ||= Factory.new("Blinkist::Config.adapter_type", Adapters::BUILT_IN).call(adapter_type)
+      end
 
       def handle_error(key, scope)
         handler = Factory.new("Blinkist::Config.errors", ErrorHandlers::BUILT_IN).call(errors)

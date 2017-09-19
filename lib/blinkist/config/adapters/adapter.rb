@@ -12,15 +12,11 @@ module Blinkist
 
       class << self
         def instance_for(type, env, app_name)
-          case type
-          when :env
-            EnvAdapter.new env, app_name
-          when :diplomat
-            DiplomatAdapter.new env, app_name
-          else
-            raise NotImplementedError
-          end
+          Factory.new("Blinkist::Adapter.for", Adapters::BUILT_IN, env, app_name).call(type)
         end
+
+        extend Gem::Deprecate
+        deprecate :instance_for, :none, 2017, 12
       end
     end
   end
