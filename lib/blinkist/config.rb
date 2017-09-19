@@ -21,7 +21,7 @@ module Blinkist
       end
 
       extend Gem::Deprecate
-      deprecate :get, :none, 2017, 12
+      deprecate :get, "get!", 2017, 12
 
       def get!(key, *args, scope: nil)
         # NOTE: we need to do this this way
