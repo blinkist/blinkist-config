@@ -1,4 +1,7 @@
 require_relative "config/version"
+require_relative "config/error"
+require_relative "config/errors/not_implemented_error"
+require_relative "config/errors/value_missing_error"
 require_relative "config/adapters/env_adapter"
 require_relative "config/adapters/diplomat_adapter"
 
