@@ -15,7 +15,7 @@ describe Blinkist::Config::Adapter do
   end
 
   describe "#get" do
-    it { expect { subject.get "some" }.to raise_error NotImplementedError }
+    it { expect { subject.get "some" }.to raise_error Blinkist::Config::NotImplementedError }
   end
 
   describe ".instance_for" do
@@ -51,7 +51,7 @@ describe Blinkist::Config::Adapter do
     context "for type to not be supported" do
       let(:type) { :something }
 
-      it { expect { subject }.to raise_error NotImplementedError }
+      it { expect { subject }.to raise_error Blinkist::Config::NotImplementedError }
     end
   end
 end
