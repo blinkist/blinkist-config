@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["sj@blinkist.com"]
 
   spec.summary       = "Simple adapter based configuration handler (supports ENV and Consul/Diplomat)."
-  spec.description   = "This GEM allows you to keep your configuration class-based by calling Blinkist::Config.get(...) instead of accessing the ENV directly. You can set up different types of adapters to connect to various configuration systems like your ENV or Consul's key-value-store."
+  spec.description   = "This GEM allows you to keep your configuration class-based by calling Blinkist::Config.get!(...) instead of accessing the ENV directly. You can set up different types of adapters to connect to various configuration systems like your ENV or Consul's key-value-store."
   spec.homepage      = "https://github.com/blinkist/blinkist-config"
   spec.license       = "MIT"
 

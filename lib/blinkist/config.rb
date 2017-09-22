@@ -14,7 +14,7 @@ require_relative "config/adapters"
 module Blinkist
   class Config
     class << self
-      attr_accessor :adapter_type, :logger, :env, :app_name, :errors
+      attr_accessor :adapter_type, :logger, :env, :app_name, :error_handler
 
       def get(key, default = nil, scope: nil)
         get!(key, default, scope: scope)
@@ -51,13 +51,13 @@ module Blinkist
       end
 
       def handle_error(key, scope)
-        handler = Factory.new("Blinkist::Config.errors", ErrorHandlers::BUILT_IN).call(errors)
+        handler = Factory.new("Blinkist::Config.error_handler", ErrorHandlers::BUILT_IN).call(error_handler)
         handler.call(key, scope)
       end
 
     end
 
     # NOTE: default configuration goes here
-    self.errors = :heuristic
+    self.error_handler = :heuristic
   end
 end

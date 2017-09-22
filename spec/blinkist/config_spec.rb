@@ -5,8 +5,8 @@ describe Blinkist::Config do
     expect(Blinkist::Config::VERSION).not_to be nil
   end
 
-  describe ".errors" do
-    subject { Blinkist::Config.errors }
+  describe ".error_handler" do
+    subject { Blinkist::Config.error_handler }
 
     it { is_expected.to eq :heuristic }
   end
@@ -50,7 +50,7 @@ describe Blinkist::Config do
 
     before do
       allow(Blinkist::Config).to receive(:adapter).and_return(adapter)
-      allow(Blinkist::Config).to receive(:errors).and_return(:strict)
+      allow(Blinkist::Config).to receive(:error_handler).and_return(:strict)
       allow(adapter).to receive(:get).with(key, scope: scope).and_return(value)
     end
 
@@ -170,7 +170,7 @@ describe Blinkist::Config do
     let(:env) { nil }
 
     before do
-      allow(described_class).to receive(:errors).and_return(strategy)
+      allow(described_class).to receive(:error_handler).and_return(strategy)
       allow(described_class).to receive(:env).and_return(env)
     end
 

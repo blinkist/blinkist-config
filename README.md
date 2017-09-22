@@ -13,7 +13,7 @@ This GEM allows you to access configuration stores with different adapters. Here
 Blinkist::Config.env = ENV["RAILS_ENV"]
 Blinkist::Config.app_name = "my_nice_app"
 Blinkist::Config.adapter_type = :env
-Blinkist::Config.errors = :strict
+Blinkist::Config.error_handler = :strict
 
 my_config_value = Blinkist::Config.get! "some/folder/config"
 
@@ -22,12 +22,12 @@ my_config_value = Blinkist::Config.get! "some/folder/config"
 
 ### Error handling
 
-When configured with `Blinkist::Config.errors = :strict` (as recommended)
+When configured with `Blinkist::Config.error_handler = :strict` (as recommended)
 reading a configuration entry for which the value is missing 
 (for example missing enviroment variables) will cause
 `Blinkist::Config::ValueMissingError` to be raised.
 
-There is also an alternative mode `Blinkist::Config.errors = :heuristic` which
+There is also an alternative mode `Blinkist::Config.error_handler = :heuristic` which
 will raise exceptions only when `Blinkist::Config.env == "production"`.
 
 This alternative mode is also the default for compatibility.
