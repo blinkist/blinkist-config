@@ -8,7 +8,7 @@ module Blinkist
         super env, app_name
 
         @items_cache = {}
-        @client = Aws::SSM::Client.new region: "us-east-1"
+        @client = Aws::SSM::Client.new
       end
 
       def get(key, default=nil, scope: nil)
