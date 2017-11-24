@@ -15,11 +15,12 @@ Gem::Specification.new do |spec|
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  spec.require_paths = %w[lib]
+  spec.require_paths = %w(lib)
 
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "rspec", "~> 3.0"
 
   spec.add_runtime_dependency "diplomat", "~> 1"
+  spec.add_runtime_dependency "aws-sdk-ssm", "~> 1.3.0"
 end

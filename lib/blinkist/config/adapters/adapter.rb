@@ -10,6 +10,10 @@ module Blinkist
         raise NotImplementedError
       end
 
+      def preload(**)
+        # nothing to do
+      end
+
       class << self
         def instance_for(type, env, app_name)
           Factory.new("Blinkist::Adapter.for", Adapters::BUILT_IN, env, app_name).call(type)

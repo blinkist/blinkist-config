@@ -9,6 +9,7 @@ require_relative "config/error_handlers/production_only_error_handler"
 require_relative "config/error_handlers"
 require_relative "config/adapters/env_adapter"
 require_relative "config/adapters/diplomat_adapter"
+require_relative "config/adapters/aws_ssm_adapter"
 require_relative "config/adapters"
 
 module Blinkist
@@ -18,6 +19,10 @@ module Blinkist
 
       def get(key, default = nil, scope: nil)
         get!(key, default, scope: scope)
+      end
+
+      def preload(scope: nil)
+        adapter.preload scope: scope
       end
 
       extend Gem::Deprecate
