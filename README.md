@@ -76,12 +76,11 @@ my_config_value = Blinkist::Config.get! "another/config", scope: "global"
 
 ### Using AWS SSM
 
-If you want to use EC2's key value store SSM, simply use our aws_ssm adapter.
+If you want to use EC2's key value store SSM, simply use our aws_ssm adapter. It'll automatically try to decrypt all keys.
 
 The GEM expects the code to run in an AWS environment with properly set up IAM.
 
 ```ruby
-# First setup the Config to use the ENV as config store
 Blinkist::Config.env = ENV["RAILS_ENV"]
 Blinkist::Config.app_name = "my_nice_app"
 Blinkist::Config.adapter_type = ENV["SSM_AVAILABLE"] == "true" ? :aws_ssm : :env
@@ -89,6 +88,10 @@ Blinkist::Config.adapter_type = ENV["SSM_AVAILABLE"] == "true" ? :aws_ssm : :env
 my_config_value = Blinkist::Config.get! "some/folder/config"
 
 # This is will try to get a parameter from SSM at "/application/my_nice_app/some/folder/config"
+
+# You can also preload all parameters to avoid later calls to SSM
+Blinkist::Config.preload
+Blinkist::Config.preload scope: "global" # in case you need also another scope being preloaded
 ```
 
 ### Using SSM with a folder scope
