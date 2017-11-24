@@ -6,11 +6,9 @@ describe Blinkist::Config::AwsSsmAdapter do
   let(:env) { "test" }
   let(:app_name) { "abtester" }
   let(:adapter) { described_class.new env, app_name }
-  let(:aws_region) { "eu-west-1" }
+  let(:ssm_client) { instance_double Aws::SSM::Client }
 
-  before do
-    described_class.aws_region = aws_region
-  end
+  before { allow(Aws::SSM::Client).to receive(:new).and_return ssm_client }
 
   describe "#get" do
     subject { adapter.get(key, default, scope: scope) }
@@ -18,19 +16,60 @@ describe Blinkist::Config::AwsSsmAdapter do
     let(:key) { "database_url" }
     let(:default) { "my fallback" }
     let(:scope) { nil }
+    let(:value) { "some value #{rand}" }
 
-    before { adapter.preload scope: "global" }
+    before do
+      allow(ssm_client).to receive_message_chain(:get_parameter, :parameter, :value).and_return value
+    end
 
-    it "test" do
-      puts subject
+    it { is_expected.to eq value }
+
+    it "calls with all required params" do
+      expect(ssm_client).to receive(:get_parameter).with(
+        name: "/application/#{app_name}/#{key}",
+        with_decryption: true
+      )
+
+      subject
+    end
+
+    context "with an Aws::SSM::Errors::ParameterNotFound" do
+      before do
+        allow(ssm_client).to receive_message_chain(
+          :get_parameter, :parameter, :value
+        ).and_raise(Aws::SSM::Errors::ParameterNotFound.new("context", "message"))
+      end
+
+      it { is_expected.to eq default }
     end
   end
 
   describe "#preload" do
-    subject { adapter.preload }
+    subject { adapter }
 
-    it "test" do
-      puts subject
+    let(:parameters) {
+      [double(name: "/application/#{app_name}/test", value: "value")]
+    }
+
+    before do
+      allow(ssm_client).to receive_message_chain(:get_parameters_by_path, :parameters).and_return parameters
+    end
+
+    it "preloads all values" do
+      adapter.preload
+
+      expect(ssm_client).to_not receive(:get_parameter)
+      subject.get "test"
+    end
+
+    it "calls with all required params" do
+      expect(ssm_client).to receive(:get_parameters_by_path).with(
+        path: "/application/#{app_name}",
+        recursive: true,
+        with_decryption: true
+      )
+
+      adapter.preload
     end
   end
 end
