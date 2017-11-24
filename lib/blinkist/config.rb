@@ -21,6 +21,10 @@ module Blinkist
         get!(key, default, scope: scope)
       end
 
+      def preload(scope: nil)
+        adapter.preload scope: scope
+      end
+
       extend Gem::Deprecate
       deprecate :get, "get!", 2017, 12
 

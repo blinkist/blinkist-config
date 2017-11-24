@@ -11,7 +11,7 @@ module Blinkist
       end
 
       def preload(**)
-        raise NotImplementedError
+        # nothing to do
       end
 
       class << self
