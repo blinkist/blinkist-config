@@ -35,9 +35,7 @@ describe Blinkist::Config::AwsSsmAdapter do
 
     it "only loads a parameter if it's not cached" do
       expect(ssm_client).to receive(:get_parameter).once
-      adapter.get(key, default, scope: scope)
-      
-      subject
+      10.times { adapter.get(key, default, scope: scope) }
     end
 
     context "with an Aws::SSM::Errors::ParameterNotFound" do
