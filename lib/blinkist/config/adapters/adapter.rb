@@ -10,7 +10,7 @@ module Blinkist
         raise NotImplementedError
       end
 
-      def preload(scope: nil)
+      def preload(**)
         raise NotImplementedError
       end
 

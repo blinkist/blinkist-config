@@ -11,10 +11,6 @@ module Blinkist
       DEFAULT_PREFIX = "/application/".freeze
 
       def initialize(env, app_name)
-        if self.class.aws_region.nil?
-          raise "Please set #{self.class}.aws_region = 'eu-west-1' (example) during initialization" 
-        end
-        
         super env, app_name
 
         @items_cache = {}
@@ -45,7 +41,7 @@ module Blinkist
 
       def query_ssm_parameter(name)
         @items_cache[name] ||= begin
-          @items_cache[name] = @client.get_parameter({ name: name, with_decryption: true }).parameter.value
+          @items_cache[name] = @client.get_parameter(name: name, with_decryption: true).parameter.value
         end
       end
 
