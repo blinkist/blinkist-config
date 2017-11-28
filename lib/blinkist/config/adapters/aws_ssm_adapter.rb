@@ -16,7 +16,7 @@ module Blinkist
       def get(key, default=nil, scope: nil)
         prefix = prefix_for(scope)
 
-        query_ssm_parameter "#{prefix}/#{key}"
+        query_ssm_parameter prefix + key
       rescue Aws::SSM::Errors::ParameterNotFound
         default
       end
@@ -29,9 +29,9 @@ module Blinkist
 
       def prefix_for(scope)
         if scope.nil?
-          DEFAULT_PREFIX + @app_name
+          DEFAULT_PREFIX + @app_name + "/"
         else
-          DEFAULT_PREFIX + scope
+          DEFAULT_PREFIX + scope + "/"
         end
       end
 

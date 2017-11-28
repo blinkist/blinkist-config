@@ -51,7 +51,7 @@ describe Blinkist::Config::AwsSsmAdapter do
 
   describe "#preload" do
     subject { adapter }
-    
+
     let(:next_token) { nil }
     let(:result) { double(parameters: parameters, next_token: next_token) }
     let(:parameters) {
@@ -71,7 +71,7 @@ describe Blinkist::Config::AwsSsmAdapter do
 
     it "calls with all required params" do
       expect(ssm_client).to receive(:get_parameters_by_path).with(
-        path: "/application/#{app_name}",
+        path: "/application/#{app_name}/",
         recursive: true,
         with_decryption: true,
         next_token: next_token
