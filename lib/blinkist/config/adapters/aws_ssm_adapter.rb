@@ -43,11 +43,25 @@ module Blinkist
       end
 
       def query_all_ssm_parameters(prefix)
-        @client.get_parameters_by_path(
-          path: prefix,
-          recursive: true,
-          with_decryption: true
-        ).parameters.map do |parameter|
+        parameters = []
+        next_token = nil
+
+        # SSM limits the results and we need to loop
+        loop do
+          result = @client.get_parameters_by_path(
+            path: prefix,
+            recursive: true,
+            with_decryption: true,
+            next_token: next_token
+          )
+
+          parameters += result.parameters
+          next_token = result.next_token
+
+          break if next_token.nil?
+        end
+
+        parameters.map do |parameter|
           @items_cache[parameter.name] = parameter.value
         end
       end

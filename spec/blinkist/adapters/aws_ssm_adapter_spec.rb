@@ -51,13 +51,15 @@ describe Blinkist::Config::AwsSsmAdapter do
 
   describe "#preload" do
     subject { adapter }
-
+    
+    let(:next_token) { nil }
+    let(:result) { double(parameters: parameters, next_token: next_token) }
     let(:parameters) {
       [double(name: "/application/#{app_name}/test", value: "value")]
     }
 
     before do
-      allow(ssm_client).to receive_message_chain(:get_parameters_by_path, :parameters).and_return parameters
+      allow(ssm_client).to receive(:get_parameters_by_path).and_return result
     end
 
     it "preloads all values" do
@@ -71,7 +73,8 @@ describe Blinkist::Config::AwsSsmAdapter do
       expect(ssm_client).to receive(:get_parameters_by_path).with(
         path: "/application/#{app_name}",
         recursive: true,
-        with_decryption: true
+        with_decryption: true,
+        next_token: next_token
       )
 
       adapter.preload
