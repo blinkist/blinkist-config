@@ -7,9 +7,17 @@ jobs:
     - image: circleci/ruby:2.3.6-node-browsers
     steps:
     - checkout
+    - restore_cache:
+        keys:
+          - gem-cache-{{ checksum "Gemfile.lock" }}
+          - gem-cache-
     - run: 
         name: Bundle Install
         command: bundle install --jobs=4 --retry=3 --path=vendor/bundle
+    - save_cache:
+        key: gem-cache-{{ checksum "Gemfile.lock" }}
+        paths:
+          - vendor/bundle
     - run:
         name: RSpec
         command: bundle exec rspec --format progress spec
