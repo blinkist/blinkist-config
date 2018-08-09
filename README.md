@@ -158,7 +158,7 @@ You'll have to have proper rights to access rubygems.org
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/blinkist-config.
+Bug reports and pull requests are welcome on GitHub at https://github.com/blinkist/blinkist-config.
 
 
 ## License
