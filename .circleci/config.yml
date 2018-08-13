@@ -4,7 +4,7 @@ jobs:
     working_directory: ~/blinkist/blinkist-config
     parallelism: 1
     docker:
-    - image: circleci/ruby:2.3.6-node-browsers
+    - image: circleci/ruby:2.5.1-node-browsers
     steps:
     - checkout
     - restore_cache:

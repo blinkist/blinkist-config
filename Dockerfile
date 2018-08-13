@@ -1,4 +1,4 @@
-FROM ruby:2.3.1-slim
+FROM ruby:2.5.1-slim
 
 ENV RAILS_ENV=test
 ENV LANG en_US.UTF-8
