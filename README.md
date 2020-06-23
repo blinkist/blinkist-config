@@ -31,18 +31,6 @@ will raise exceptions only when `Blinkist::Config.env == "production"`.
 
 This alternative mode is also the default for compatibility.
 
-### Having a default value
-
-If you don't want `Blinkist::Config.get!` to scream at you for missing
-configuration entries then you canprovide a default value as a second
-paramter to `get!`:
-
-```ruby
-my_config_value = Blinkist::Config.get! "some/folder/config", "default value"
-
-# If ENV["SOME_FOLDER_CONFIG"] is nil, "default value" will be returned
-```
-
 ### Using Diplomat & Consul
 
 If you want to use Consul's key value store, simply use our diplomat adapter.
@@ -102,6 +90,21 @@ my_config_value = Blinkist::Config.get! "another/config", scope: "global"
 # This will replace `my_nice_app` with `global` and try to resolve "/application/global/another/config"
 ```
 
+### Why no default values?
+
+Providing default values is not supported by this library (anymore) since such functionality can lead to easy programmer errors.
+
+Most commonly someone forgets to add a config value to the production or stage config store (e.g. AWS SSM) but the systems 
+fails silently since it falls back to the default value.
+We also saw cases where missing parameters in AWS SSM caused throttling exceptions since a missing parameter cannot be 
+cached by this gem and hence is requested over and over again. These throttling also can affect other services in the same AWS account!
+[Example incident post mortem](https://blinkist.atlassian.net/wiki/spaces/WEB/pages/1769570440/Postmortem+2020-06-09+SSM+throttling+in+webapp+due+to+Audiobook+import+in+Lambda)
+
+This gem ensures to fail in a way developers will notice by throwing proper errors for missing configuration - latest when deployed to stage.
+
+The more locations there are for a config value to be defined the more complexity and harder to reason about it is. We think having two distinct places is enough:
+- `.env` files for local development config
+- AWS SSM for production/stage config
 
 ## Installation
 
@@ -110,6 +113,18 @@ Add this line to your application's Gemfile:
 ```ruby
 gem "blinkist-config"
 ```
+
+### Upgrade to v2.X
+
+Version 2.X removes the previously deprecated `Blinkist::Config.get` method. It also removes the possibility to supply a default value in general.
+For the reasoning about this change see "Why no default values?" above.
+
+Required code changes:
+- `Blinkist::Config.get("yourKey", "yourDefaultValue")` => `Blinkist::Config.get!("yourKey")`
+- `Blinkist::Config.get!("yourKey", "yourDefaultValue")` => `Blinkist::Config.get!("yourKey")`
+
+Now also `Blinkist::Config.error_handler = :strict` is the default to throw errors on missing config as early as possible. 
+If you really rely on the previous default of `Blinkist::Config.error_handler = :heuristic` please set in your application config.  
 
 ## Usage
 
