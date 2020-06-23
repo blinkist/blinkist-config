@@ -15,7 +15,7 @@ require_relative "config/adapters"
 module Blinkist
   class Config
     class << self
-      attr_accessor :adapter_type, :logger, :env, :app_name, :error_handler
+      attr_accessor :adapter_type, :logger, :env, :app_name, :error_handler, :notifier
 
       def get(key, default = nil, scope: nil)
         get!(key, default, scope: scope)
@@ -47,6 +47,7 @@ module Blinkist
         if from_adapter.nil? && bang
           handle_error(key, scope)
         else
+          notifier&.notify("Missing config value from adapter '#{adapter.class}' for key '#{key}' in scope '#{scope}'. This can lead to AWS SSM throttling issues in production! Make sure to provide values for all config keys!") if from_adapter.nil?
           return from_adapter || default
         end
       end

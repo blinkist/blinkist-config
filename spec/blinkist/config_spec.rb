@@ -17,11 +17,17 @@ describe Blinkist::Config do
     let(:key) { "my_key" }
     let(:scope) { nil }
     let(:default) { "some default" }
+    let(:notifier) { nil }
     let(:value) { "1234" }
     let(:adapter) { instance_double Blinkist::Config::Adapter, get: value }
 
     before do
       allow(Blinkist::Config).to receive(:adapter).and_return adapter
+      described_class.notifier = notifier
+    end
+
+    after do
+      described_class.notifier = nil
     end
 
     it { is_expected.to eq value }
@@ -39,6 +45,15 @@ describe Blinkist::Config do
       let(:value) { nil }
 
       it { is_expected.to eq default }
+
+      context "with a notifier provided" do
+        let(:notifier) { double("notifier") }
+
+        it "notifies" do
+          expect(notifier).to receive(:notify).with("Missing config value from adapter 'RSpec::Mocks::InstanceVerifyingDouble' for key 'my_key' in scope ''. This can lead to AWS SSM throttling issues in production! Make sure to provide values for all config keys!")
+          subject
+        end
+      end
     end
   end
 
