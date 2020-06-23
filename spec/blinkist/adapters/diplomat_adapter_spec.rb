@@ -13,10 +13,9 @@ describe Blinkist::Config::DiplomatAdapter do
   end
 
   describe "#get" do
-    subject { adapter.get(key, default, scope: scope) }
+    subject { adapter.get(key, scope: scope) }
 
     let(:key) { "my/special/key" }
-    let(:default) { "my fallback" }
     let(:diplomat_key) { "#{app_name}/#{key}" }
     let(:consul_value) { "a consul value" }
     let(:scope) { nil }
@@ -33,7 +32,7 @@ describe Blinkist::Config::DiplomatAdapter do
     end
 
     context "when the key has being asked before" do
-      before { adapter.get(key, default, scope: scope) }
+      before { adapter.get(key, scope: scope) }
 
       it "doesn't call Diplomat a second time" do
         expect(Diplomat::Kv).to_not receive(:get)
@@ -44,7 +43,7 @@ describe Blinkist::Config::DiplomatAdapter do
     context "when there's an Diplomat::KeyNotFound error" do
       before { allow(Diplomat::Kv).to receive(:get).with(diplomat_key).and_raise Diplomat::KeyNotFound }
 
-      it { is_expected.to eq default }
+      it { is_expected.to eq nil }
     end
   end
 end

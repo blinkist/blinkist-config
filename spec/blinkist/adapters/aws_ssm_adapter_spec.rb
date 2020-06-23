@@ -11,10 +11,9 @@ describe Blinkist::Config::AwsSsmAdapter do
   before { allow(Aws::SSM::Client).to receive(:new).and_return ssm_client }
 
   describe "#get" do
-    subject { adapter.get(key, default, scope: scope) }
+    subject { adapter.get(key, scope: scope) }
 
     let(:key) { "database_url" }
-    let(:default) { "my fallback" }
     let(:scope) { nil }
     let(:value) { "some value #{rand}" }
 
@@ -35,7 +34,7 @@ describe Blinkist::Config::AwsSsmAdapter do
 
     it "only loads a parameter if it's not cached" do
       expect(ssm_client).to receive(:get_parameter).once
-      10.times { adapter.get(key, default, scope: scope) }
+      10.times { adapter.get(key, scope: scope) }
     end
 
     context "with an Aws::SSM::Errors::ParameterNotFound" do
@@ -45,7 +44,7 @@ describe Blinkist::Config::AwsSsmAdapter do
         ).and_raise(Aws::SSM::Errors::ParameterNotFound.new("context", "message"))
       end
 
-      it { is_expected.to eq default }
+      it { is_expected.to eq nil }
     end
   end
 

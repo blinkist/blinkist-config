@@ -14,7 +14,7 @@ module Blinkist
         end
       end
 
-      def get(key, default=nil, scope: nil)
+      def get(key, scope: nil)
         scope ||= @app_name
 
         diplomat_key = "#{scope}/#{key}"
@@ -25,7 +25,7 @@ module Blinkist
 
         @items_cache[diplomat_key]
       rescue Diplomat::KeyNotFound
-        default
+        nil
       end
     end
   end

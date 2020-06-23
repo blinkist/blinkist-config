@@ -3,9 +3,9 @@ require_relative "adapter"
 module Blinkist
   class Config
     class EnvAdapter < Adapter
-      def get(key, default = nil, **)
+      def get(key, **)
         env_key = key.tr("/", "_").upcase
-        ENV[env_key] || default
+        ENV[env_key] || nil
       end
     end
   end

@@ -13,12 +13,12 @@ module Blinkist
         @client = Aws::SSM::Client.new
       end
 
-      def get(key, default=nil, scope: nil)
+      def get(key, scope: nil)
         prefix = prefix_for(scope)
 
         query_ssm_parameter prefix + key
       rescue Aws::SSM::Errors::ParameterNotFound
-        default
+        nil
       end
 
       def preload(scope: nil)

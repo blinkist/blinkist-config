@@ -6,7 +6,7 @@ module Blinkist
         @app_name = app_name
       end
 
-      def get(_key, _default=nil, **)
+      def get(_key, **)
         raise NotImplementedError
       end
 

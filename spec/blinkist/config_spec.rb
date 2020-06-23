@@ -11,37 +11,6 @@ describe Blinkist::Config do
     it { is_expected.to eq :heuristic }
   end
 
-  describe ".get" do
-    subject { described_class.get key, default, scope: scope }
-
-    let(:key) { "my_key" }
-    let(:scope) { nil }
-    let(:default) { "some default" }
-    let(:value) { "1234" }
-    let(:adapter) { instance_double Blinkist::Config::Adapter, get: value }
-
-    before do
-      allow(Blinkist::Config).to receive(:adapter).and_return adapter
-    end
-
-    it { is_expected.to eq value }
-
-    context "with some scope" do
-      let(:scope) { "my/scope" }
-
-      it "passes the scope to the adapter" do
-        expect(adapter).to receive(:get).with(key, scope: scope).and_return value
-        expect(subject).to eq value
-      end
-    end
-
-    context "with a nil value being returned from the adapter" do
-      let(:value) { nil }
-
-      it { is_expected.to eq default }
-    end
-  end
-
   describe ".get!" do
     let(:value)   { "1234" }
     let(:scope)   { nil }
@@ -92,15 +61,6 @@ describe Blinkist::Config do
         it "is expected to raise an error" do
           expect { subject }.to raise_error(Blinkist::Config::ValueMissingError)
         end
-
-        context "and a default value" do
-          let(:scope)   { "some_valid_scope" }
-          let(:default) { "default value" }
-
-          subject { described_class.get!(key, default, scope: invalid) }
-
-          it { is_expected.to eq(default) }
-        end
       end
     end
 
@@ -113,22 +73,6 @@ describe Blinkist::Config do
 
       it "is expected to raise an error" do
         expect { subject }.to raise_error(Blinkist::Config::ValueMissingError)
-      end
-
-      context "and a default value" do
-        let(:default) { "default value" }
-
-        subject { described_class.get!("invalid_key", default) }
-
-        it { is_expected.to eq(default) }
-      end
-
-      context "and a default value of nil" do
-        let(:default) { nil }
-
-        subject { described_class.get!("invalid_key", default) }
-
-        it { is_expected.to eq(default) }
       end
     end
   end

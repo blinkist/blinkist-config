@@ -7,12 +7,11 @@ describe Blinkist::Config::EnvAdapter do
   let(:app_name) { "my_test_app" }
 
   describe "#get" do
-    subject { super().get(key, default) }
+    subject { super().get(key) }
 
     let(:key) { "my/special/key" }
     let(:env_key) { "MY_SPECIAL_KEY" }
     let(:env_value) { "test value" }
-    let(:default) { "my fallback" }
 
     before { ENV[env_key] = env_value }
     after { ENV.delete env_key }
@@ -22,7 +21,7 @@ describe Blinkist::Config::EnvAdapter do
     context "with the ENV being nil" do
       let(:env_value) { nil }
 
-      it { is_expected.to eq default }
+      it { is_expected.to eq nil }
     end
   end
 end
