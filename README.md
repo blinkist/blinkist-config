@@ -34,7 +34,7 @@ This alternative mode is also the default for compatibility.
 ### Having a default value
 
 If you don't want `Blinkist::Config.get!` to scream at you for missing
-configuration entries then you canprovide a default value as a second
+configuration entries then you can provide a default value as a second
 paramter to `get!`:
 
 ```ruby
@@ -42,6 +42,13 @@ my_config_value = Blinkist::Config.get! "some/folder/config", "default value"
 
 # If ENV["SOME_FOLDER_CONFIG"] is nil, "default value" will be returned
 ```
+
+Note however that working with default values can lead to unexpected results 
+(e.g. AWS SSM throttling exceptions) in production! Always provide a config 
+value in production!
+
+To get notified about missing values in production you can pass an object with
+a `notify` method to `Blinkist::Config.notifier`. For example `Airbrake`. 
 
 ### Using Diplomat & Consul
 
@@ -119,6 +126,7 @@ You have to set up the GEM before you can use it. The basic setup requires this
 Blinkist::Config.env = "production" || "test" || "development"
 Blinkist::Config.app_name = "your_app_name" # Used only with diplomat adapter
 Blinkist::Config.adapter_type = :diplomat || :env
+Blinkist::Config.notifier = Airbrake # optional 
 ```
 
 It's best to drop a `config.rb` into your app and load this file before every other file. In Rails you can link it into your `application.rb`
