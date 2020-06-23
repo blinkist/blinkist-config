@@ -8,7 +8,7 @@ describe Blinkist::Config do
   describe ".error_handler" do
     subject { Blinkist::Config.error_handler }
 
-    it { is_expected.to eq :heuristic }
+    it { is_expected.to eq :strict }
   end
 
   describe ".get!" do

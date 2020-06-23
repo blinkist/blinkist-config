@@ -29,7 +29,7 @@ reading a configuration entry for which the value is missing
 There is also an alternative mode `Blinkist::Config.error_handler = :heuristic` which
 will raise exceptions only when `Blinkist::Config.env == "production"`.
 
-This alternative mode is also the default for compatibility.
+This alternative mode can be used for backward compatibility.
 
 ### Using Diplomat & Consul
 
