@@ -14,7 +14,7 @@ ADD . /tmp/tmpapp
 
 RUN echo 'gem: --no-document' >> ~/.gemrc && \
     apt-get clean && apt-get update -qq && apt-get install -y build-essential $RUNTIME_PACKAGES && \
-    gem install bundler --version 1.12.5 && \
+    gem install bundler --version 2.2.28 && \
     gem install gem-release && \
     bundle update && bundle install --jobs 20 --retry 5 && \
     rm -Rf /tmp/tmpapp/ && \
