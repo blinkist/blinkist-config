@@ -8,10 +8,6 @@ module Blinkist
         super env, app_name
 
         @items_cache = {}
-
-        Diplomat.configure do |config|
-          config.url = "http://172.17.0.1:8500"
-        end
       end
 
       def get(key, default=nil, scope: nil)
