@@ -21,6 +21,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "rspec", "~> 3.0"
 
-  spec.add_runtime_dependency "diplomat", "~> 1"
+  spec.add_runtime_dependency "diplomat", "~> 2"
   spec.add_runtime_dependency "aws-sdk-ssm", "~> 1"
 end

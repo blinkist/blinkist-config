@@ -9,6 +9,11 @@ This GEM allows you to access configuration stores with different adapters. Here
 
 ```ruby
 # First setup the Config to use the ENV as config store
+
+Diplomat.configure do |config|
+  config.url = "http://172.17.0.1:8500"
+end
+
 Blinkist::Config.env = ENV["RAILS_ENV"]
 Blinkist::Config.app_name = "my_nice_app"
 Blinkist::Config.adapter_type = :env
@@ -163,4 +168,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/blinki
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

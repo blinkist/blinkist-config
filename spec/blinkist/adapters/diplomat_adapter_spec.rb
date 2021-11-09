@@ -9,7 +9,7 @@ describe Blinkist::Config::DiplomatAdapter do
 
   it "configures Diplomat" do
     subject
-    expect(Diplomat.configuration.url).to eq "http://172.17.0.1:8500"
+    expect(Diplomat.configuration.url).to eq "http://localhost:8500"
   end
 
   describe "#get" do
