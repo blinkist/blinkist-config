@@ -1,0 +1,27 @@
+name: CI
+
+on: [ push ]
+
+jobs:
+  build:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7.3
+        bundler-cache: true
+        bundler: '2.4.22'
+
+    - name: Bundle Install
+      run: bundle install --jobs=4 --retry=3 --path=vendor/bundle
+
+    - name: Run RSpec
+      env:
+        RAILS_ENV: test
+        RACK_ENV: test
+      run: bundle exec rspec --format progress spec
