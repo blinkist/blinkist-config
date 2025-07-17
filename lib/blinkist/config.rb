@@ -17,8 +17,8 @@ module Blinkist
     class << self
       attr_accessor :adapter_type, :logger, :env, :app_name, :error_handler
 
-      def get(key, default = nil, scope: nil)
-        get!(key, default, scope: scope)
+      def get(key, default = nil, scope: nil, refetch: false)
+        get!(key, default, scope: scope, refetch: refetch)
       end
 
       def preload(scope: nil)
@@ -28,7 +28,7 @@ module Blinkist
       extend Gem::Deprecate
       deprecate :get, "get!", 2017, 12
 
-      def get!(key, *args, scope: nil)
+      def get!(key, *args, scope: nil, refetch: false)
         # NOTE: we need to do this this way
         # to handle 'nil' default correctly
         case args.length
@@ -42,12 +42,12 @@ module Blinkist
           raise ArgumentError, "wrong number of arguments (given #{args.length + 1}, expected 1..2)"
         end
 
-        from_adapter = adapter.get(key, scope: scope)
+        from_adapter = adapter.get(key, scope: scope, refetch: refetch)
 
         if from_adapter.nil? && bang
           handle_error(key, scope)
         else
-          return from_adapter || default
+          from_adapter || default
         end
       end
 

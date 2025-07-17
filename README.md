@@ -27,7 +27,7 @@ my_config_value = Blinkist::Config.get! "some/folder/config"
 ### Error handling
 
 When configured with `Blinkist::Config.error_handler = :strict` (as recommended)
-reading a configuration entry for which the value is missing 
+reading a configuration entry for which the value is missing
 (for example missing enviroment variables) will cause
 `Blinkist::Config::ValueMissingError` to be raised.
 
@@ -48,12 +48,22 @@ my_config_value = Blinkist::Config.get! "some/folder/config", "default value"
 # If ENV["SOME_FOLDER_CONFIG"] is nil, "default value" will be returned
 ```
 
+### Refetching a value
+
+If you want to refetch a value from the config store, you can set the `refetch` parameter to `true`.
+
+```ruby
+my_config_value = Blinkist::Config.get! "some/folder/config", refetch: true
+
+# This will reload the value from the config store, even if it's cached.
+```
+
 ### Using Diplomat & Consul
 
 If you want to use Consul's key value store, simply use our diplomat adapter.
 
-* [https://www.consul.io/](https://www.consul.io/)
-* [https://github.com/WeAreFarmGeek/diplomat](https://github.com/WeAreFarmGeek/diplomat)
+- [https://www.consul.io/](https://www.consul.io/)
+- [https://github.com/WeAreFarmGeek/diplomat](https://github.com/WeAreFarmGeek/diplomat)
 
 The GEM expects consul to listen to `http://172.17.0.1:8500`
 
@@ -69,6 +79,7 @@ my_config_value = Blinkist::Config.get! "some/folder/config"
 ```
 
 ### Using Diplomat with a folder scope
+
 ```ruby
 # Here we setting a scope outside of the app
 
@@ -99,6 +110,7 @@ Blinkist::Config.preload scope: "global" # in case you need also another scope b
 ```
 
 ### Using SSM with a folder scope
+
 ```ruby
 # Here we setting a scope outside of the app
 
@@ -106,7 +118,6 @@ my_config_value = Blinkist::Config.get! "another/config", scope: "global"
 
 # This will replace `my_nice_app` with `global` and try to resolve "/application/global/another/config"
 ```
-
 
 ## Installation
 
@@ -141,7 +152,7 @@ require "rails"
 You can build this project easily with [docker compose](https://docs.docker.com/compose/).
 
 ```
-docker-compose run rake
+docker compose run rake
 ```
 
 This will execute rake and run all specs by auto correcting the code with rubocop.
@@ -149,13 +160,13 @@ This will execute rake and run all specs by auto correcting the code with ruboco
 If you're ready to tag a new version, do this
 
 ```
-docker-compose run gem bump -t -v major|minor|patch
+docker compose run gem bump -t -v major|minor|patch
 ```
 
 To deploy to rubygems.org do this then
 
 ```
-docker-compose run gem release
+docker compose run gem release
 ```
 
 You'll have to have proper rights to access rubygems.org
@@ -163,7 +174,6 @@ You'll have to have proper rights to access rubygems.org
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/blinkist/blinkist-config.
-
 
 ## License
 

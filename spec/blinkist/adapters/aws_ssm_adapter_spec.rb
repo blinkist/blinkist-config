@@ -11,11 +11,12 @@ describe Blinkist::Config::AwsSsmAdapter do
   before { allow(Aws::SSM::Client).to receive(:new).and_return ssm_client }
 
   describe "#get" do
-    subject { adapter.get(key, default, scope: scope) }
+    subject { adapter.get(key, default, scope: scope, refetch: refetch) }
 
     let(:key) { "database_url" }
     let(:default) { "my fallback" }
     let(:scope) { nil }
+    let(:refetch) { false }
     let(:value) { "some value #{rand}" }
 
     before do
@@ -36,6 +37,28 @@ describe Blinkist::Config::AwsSsmAdapter do
     it "only loads a parameter if it's not cached" do
       expect(ssm_client).to receive(:get_parameter).once
       10.times { adapter.get(key, default, scope: scope) }
+    end
+
+    context "when refetch is true" do
+      let(:refetch) { true }
+      let(:new_value) { "updated value #{rand}" }
+
+      it "reloads the value from SSM even if cached" do
+        # First call to cache the value
+        first_value = adapter.get(key, default, scope: scope)
+
+        # Second call should get a new value due to refetch: true
+        allow(ssm_client).to receive_message_chain(:get_parameter, :parameter, :value).and_return(new_value)
+        second_value = adapter.get(key, default, scope: scope, refetch: true)
+
+        expect(second_value).to eq new_value
+        expect(second_value).not_to eq first_value
+      end
+
+      it "calls SSM every time with refetch: true" do
+        expect(ssm_client).to receive(:get_parameter).exactly(3).times
+        3.times { adapter.get(key, default, scope: scope, refetch: true) }
+      end
     end
 
     context "with an Aws::SSM::Errors::ParameterNotFound" do

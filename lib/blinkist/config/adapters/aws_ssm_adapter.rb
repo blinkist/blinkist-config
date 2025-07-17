@@ -7,16 +7,16 @@ module Blinkist
       DEFAULT_PREFIX = "/application/".freeze
 
       def initialize(env, app_name)
-        super env, app_name
+        super
 
         @items_cache = {}
         @client = Aws::SSM::Client.new
       end
 
-      def get(key, default=nil, scope: nil)
+      def get(key, default=nil, scope: nil, refetch: false)
         prefix = prefix_for(scope)
 
-        query_ssm_parameter prefix + key
+        query_ssm_parameter(prefix + key, refetch)
       rescue Aws::SSM::Errors::ParameterNotFound
         default
       end
@@ -29,17 +29,20 @@ module Blinkist
 
       def prefix_for(scope)
         if scope.nil?
-          DEFAULT_PREFIX + @app_name + "/"
+          "#{DEFAULT_PREFIX}#{@app_name}/"
         else
-          DEFAULT_PREFIX + scope + "/"
+          "#{DEFAULT_PREFIX}#{scope}/"
         end
       end
 
-      def query_ssm_parameter(name)
-        @items_cache[name] ||= @client.get_parameter(
-          name: name,
-          with_decryption: true
-        ).parameter.value
+      def query_ssm_parameter(name, refetch)
+        if refetch || !@items_cache.key?(name)
+          @items_cache[name] = @client.get_parameter(
+            name: name,
+            with_decryption: true
+          ).parameter.value
+        end
+        @items_cache[name]
       end
 
       def query_all_ssm_parameters(prefix)

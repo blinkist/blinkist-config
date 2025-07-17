@@ -1,5 +1,4 @@
-
-lib = File.expand_path("../lib", __FILE__)
+lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require_relative "lib/blinkist/config/version"
 
@@ -15,12 +14,8 @@ Gem::Specification.new do |spec|
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  spec.require_paths = %w(lib)
+  spec.require_paths = %w[lib]
 
-  spec.add_development_dependency "bundler"
-  spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
-
-  spec.add_runtime_dependency "diplomat", "~> 2"
-  spec.add_runtime_dependency "aws-sdk-ssm", "~> 1"
+  spec.add_dependency "aws-sdk-ssm", "~> 1"
+  spec.add_dependency "diplomat", "~> 2"
 end
