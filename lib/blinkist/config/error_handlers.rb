@@ -1,4 +1,3 @@
-
 module Blinkist
   class Config
     module ErrorHandlers

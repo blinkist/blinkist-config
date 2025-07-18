@@ -30,7 +30,7 @@ describe Blinkist::Config do
       let(:scope) { "my/scope" }
 
       it "passes the scope to the adapter" do
-        expect(adapter).to receive(:get).with(key, scope: scope).and_return value
+        expect(adapter).to receive(:get).with(key, scope: scope, refetch: false).and_return value
         expect(subject).to eq value
       end
     end
@@ -43,15 +43,15 @@ describe Blinkist::Config do
   end
 
   describe ".get!" do
-    let(:value)   { "1234" }
-    let(:scope)   { nil }
+    let(:value) { "1234" }
+    let(:scope) { nil }
     let(:adapter) { instance_double Blinkist::Config::Adapter }
-    let(:key)     { "some_valid_key" }
+    let(:key) { "some_valid_key" }
 
     before do
       allow(Blinkist::Config).to receive(:adapter).and_return(adapter)
       allow(Blinkist::Config).to receive(:error_handler).and_return(:strict)
-      allow(adapter).to receive(:get).with(key, scope: scope).and_return(value)
+      allow(adapter).to receive(:get).with(key, scope: scope, refetch: false).and_return(value)
     end
 
     context "when called with too many arguments" do
@@ -85,7 +85,7 @@ describe Blinkist::Config do
         let(:scope) { "some_valid_scope" }
         let(:invalid) { "some_invalid_scope" }
 
-        before { allow(adapter).to receive(:get).with(key, scope: invalid).and_return(nil) }
+        before { allow(adapter).to receive(:get).with(key, scope: invalid, refetch: false).and_return(nil) }
 
         subject { described_class.get!(key, scope: invalid) }
 
@@ -94,7 +94,7 @@ describe Blinkist::Config do
         end
 
         context "and a default value" do
-          let(:scope)   { "some_valid_scope" }
+          let(:scope) { "some_valid_scope" }
           let(:default) { "default value" }
 
           subject { described_class.get!(key, default, scope: invalid) }
@@ -107,7 +107,7 @@ describe Blinkist::Config do
     context "with an invalid key" do
       let(:invalid) { "invalid_key" }
 
-      before { allow(adapter).to receive(:get).with(invalid, scope: scope).and_return(nil) }
+      before { allow(adapter).to receive(:get).with(invalid, scope: scope, refetch: false).and_return(nil) }
 
       subject { described_class.get!(invalid, scope: scope) }
 

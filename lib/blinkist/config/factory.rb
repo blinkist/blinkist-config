@@ -1,7 +1,7 @@
 module Blinkist
   class Config
     class Factory
-      def initialize(aspect, implementations, env=Blinkist::Config.env, app_name=Blinkist::Config.app_name)
+      def initialize(aspect, implementations, env = Blinkist::Config.env, app_name = Blinkist::Config.app_name)
         @aspect = aspect
         @implementations = implementations
         @env = env
@@ -12,7 +12,7 @@ module Blinkist
         case strategy
         when Symbol
           klass = @implementations[strategy] ||
-                  raise(NotImplementedError, "Unknown strategy #{strategy} for #{@aspect}")
+            raise(NotImplementedError, "Unknown strategy #{strategy} for #{@aspect}")
         when Class
           klass = strategy
         else
