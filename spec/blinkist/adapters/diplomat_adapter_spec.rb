@@ -42,26 +42,30 @@ describe Blinkist::Config::DiplomatAdapter do
       end
     end
 
-    context "when refetch is true" do
-      let(:refetch) { true }
-      let(:new_consul_value) { "updated consul value" }
+    it "maintains caching behavior alongside refetch functionality" do
+      # First call should cache the value
+      first_value = adapter.get(key, default, scope: scope)
 
-      it "reloads the value from Consul even if cached" do
-        # First call to cache the value
-        first_value = adapter.get(key, default, scope: scope)
+      # Second call without refetch should use cache (no additional Consul call)
+      second_value = adapter.get(key, default, scope: scope)
+      expect(second_value).to eq first_value
 
-        # Second call should get a new value due to refetch: true
-        allow(Diplomat::Kv).to receive(:get).with(diplomat_key).and_return(new_consul_value)
-        second_value = adapter.get(key, default, scope: scope, refetch: true)
+      # Third call with refetch should bypass cache and call Consul again
+      allow(Diplomat::Kv).to receive(:get).with(diplomat_key).and_return("refreshed value")
+      third_value = adapter.get(key, default, scope: scope, refetch: true)
+      expect(third_value).to eq "refreshed value"
 
-        expect(second_value).to eq new_consul_value
-        expect(second_value).not_to eq first_value
-      end
+      # Fourth call without refetch should use the newly cached value (no additional Consul call)
+      fourth_value = adapter.get(key, default, scope: scope)
+      expect(fourth_value).to eq "refreshed value"
 
-      it "calls Consul every time with refetch: true" do
-        expect(Diplomat::Kv).to receive(:get).exactly(3).times
-        3.times { adapter.get(key, default, scope: scope, refetch: true) }
-      end
+      # Should have called Consul exactly twice: once for initial load, once for refetch
+      expect(Diplomat::Kv).to have_received(:get).exactly(2).times
+    end
+
+    it "calls Consul every time with refetch: true" do
+      expect(Diplomat::Kv).to receive(:get).exactly(3).times
+      3.times { adapter.get(key, default, scope: scope, refetch: true) }
     end
 
     context "when there's an Diplomat::KeyNotFound error" do

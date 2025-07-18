@@ -20,7 +20,10 @@ describe Blinkist::Config::AwsSsmAdapter do
     let(:value) { "some value #{rand}" }
 
     before do
-      allow(ssm_client).to receive_message_chain(:get_parameter, :parameter, :value).and_return value
+      allow(ssm_client).to receive(:get_parameter).and_return(instance_double(Aws::SSM::Types::GetParameterResult,
+        parameter: instance_double(
+          Aws::SSM::Types::Parameter, value: value
+        )))
     end
 
     it { is_expected.to eq value }
@@ -39,33 +42,39 @@ describe Blinkist::Config::AwsSsmAdapter do
       10.times { adapter.get(key, default, scope: scope) }
     end
 
-    context "when refetch is true" do
-      let(:refetch) { true }
-      let(:new_value) { "updated value #{rand}" }
+    it "maintains caching behavior alongside refetch functionality" do
+      # First call should cache the value
+      first_value = adapter.get(key, default, scope: scope)
 
-      it "reloads the value from SSM even if cached" do
-        # First call to cache the value
-        first_value = adapter.get(key, default, scope: scope)
+      # Second call without refetch should use cache (no additional SSM call)
+      second_value = adapter.get(key, default, scope: scope)
+      expect(second_value).to eq first_value
 
-        # Second call should get a new value due to refetch: true
-        allow(ssm_client).to receive_message_chain(:get_parameter, :parameter, :value).and_return(new_value)
-        second_value = adapter.get(key, default, scope: scope, refetch: true)
+      # Third call with refetch should bypass cache and call SSM again
+      allow(ssm_client).to receive(:get_parameter).and_return(instance_double(Aws::SSM::Types::GetParameterResult,
+        parameter: instance_double(
+          Aws::SSM::Types::Parameter, value: "refreshed value"
+        )))
+      third_value = adapter.get(key, default, scope: scope, refetch: true)
+      expect(third_value).to eq "refreshed value"
 
-        expect(second_value).to eq new_value
-        expect(second_value).not_to eq first_value
-      end
+      # Fourth call without refetch should use the newly cached value (no additional SSM call)
+      fourth_value = adapter.get(key, default, scope: scope)
+      expect(fourth_value).to eq "refreshed value"
 
-      it "calls SSM every time with refetch: true" do
-        expect(ssm_client).to receive(:get_parameter).exactly(3).times
-        3.times { adapter.get(key, default, scope: scope, refetch: true) }
-      end
+      # Should have called SSM exactly twice: once for initial load, once for refetch
+      expect(ssm_client).to have_received(:get_parameter).exactly(2).times
+    end
+
+    it "calls SSM every time with refetch: true" do
+      expect(ssm_client).to receive(:get_parameter).exactly(3).times
+      3.times { adapter.get(key, default, scope: scope, refetch: true) }
     end
 
     context "with an Aws::SSM::Errors::ParameterNotFound" do
       before do
-        allow(ssm_client).to receive_message_chain(
-          :get_parameter, :parameter, :value
-        ).and_raise(Aws::SSM::Errors::ParameterNotFound.new("context", "message"))
+        allow(ssm_client).to receive(:get_parameter).and_raise(Aws::SSM::Errors::ParameterNotFound.new("context",
+          "message"))
       end
 
       it { is_expected.to eq default }
@@ -77,9 +86,9 @@ describe Blinkist::Config::AwsSsmAdapter do
 
     let(:next_token) { nil }
     let(:result) { double(parameters: parameters, next_token: next_token) }
-    let(:parameters) {
+    let(:parameters) do
       [double(name: "/application/#{app_name}/test", value: "value")]
-    }
+    end
 
     before do
       allow(ssm_client).to receive(:get_parameters_by_path).and_return result
