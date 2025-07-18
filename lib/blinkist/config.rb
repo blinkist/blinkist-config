@@ -34,10 +34,10 @@ module Blinkist
         case args.length
         when 0
           default = nil
-          bang    = true
+          bang = true
         when 1
           default = args.first
-          bang    = false
+          bang = false
         else
           raise ArgumentError, "wrong number of arguments (given #{args.length + 1}, expected 1..2)"
         end
@@ -59,7 +59,6 @@ module Blinkist
         handler = Factory.new("Blinkist::Config.error_handler", ErrorHandlers::BUILT_IN).call(error_handler)
         handler.call(key, scope)
       end
-
     end
 
     # NOTE: default configuration goes here

@@ -7,11 +7,11 @@ describe Blinkist::Config::Adapter do
   let(:app_name) { "some_app" }
 
   it "assigns @env" do
-    expect(subject.instance_variable_get("@env")).to eq env
+    expect(subject.instance_variable_get(:@env)).to eq env
   end
 
   it "assigns @app_name" do
-    expect(subject.instance_variable_get("@app_name")).to eq app_name
+    expect(subject.instance_variable_get(:@app_name)).to eq app_name
   end
 
   describe "#get" do
@@ -21,7 +21,7 @@ describe Blinkist::Config::Adapter do
   describe ".instance_for" do
     subject { described_class.instance_for type, env, app_name }
 
-    let(:env) { { "some" => "value" } }
+    let(:env) { {"some" => "value"} }
     let(:app_name) { "my_app_name" }
 
     context "for type is :env" do

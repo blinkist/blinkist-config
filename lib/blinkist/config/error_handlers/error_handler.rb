@@ -7,7 +7,7 @@ module Blinkist
       end
 
       def call(key, scope)
-        raise ValueMissingError, "Missing value for #{key} in the scope: #{scope || '<default>'} (Please check the configuration for missing keys)"
+        raise ValueMissingError, "Missing value for #{key} in the scope: #{scope || "<default>"} (Please check the configuration for missing keys)"
       end
     end
   end

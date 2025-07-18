@@ -51,11 +51,13 @@ my_config_value = Blinkist::Config.get! "some/folder/config", "default value"
 ### Refetching a value
 
 If you want to refetch a value from the config store, you can set the `refetch` parameter to `true`.
+**WARNING**: This will cut into our SSM quota on AWS - please use this with caution and behind another way of caching.
+See [AWS SSM Quota](https://docs.aws.amazon.com/general/latest/gr/ssm.html#parameter-store) for more information.
 
 ```ruby
 my_config_value = Blinkist::Config.get! "some/folder/config", refetch: true
 
-# This will reload the value from the config store, even if it's cached.
+# This will reload the value from the config store, even if it's cached. The re-fetched value will then be cached.
 ```
 
 ### Using Diplomat & Consul
@@ -155,7 +157,7 @@ You can build this project easily with [docker compose](https://docs.docker.com/
 docker compose run rake
 ```
 
-This will execute rake and run all specs by auto correcting the code with rubocop.
+This will execute rake and run all specs by auto correcting the code with StandardRB.
 
 If you're ready to tag a new version, do this
 

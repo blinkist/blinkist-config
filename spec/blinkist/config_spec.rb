@@ -43,10 +43,10 @@ describe Blinkist::Config do
   end
 
   describe ".get!" do
-    let(:value)   { "1234" }
-    let(:scope)   { nil }
+    let(:value) { "1234" }
+    let(:scope) { nil }
     let(:adapter) { instance_double Blinkist::Config::Adapter }
-    let(:key)     { "some_valid_key" }
+    let(:key) { "some_valid_key" }
 
     before do
       allow(Blinkist::Config).to receive(:adapter).and_return(adapter)
@@ -94,7 +94,7 @@ describe Blinkist::Config do
         end
 
         context "and a default value" do
-          let(:scope)   { "some_valid_scope" }
+          let(:scope) { "some_valid_scope" }
           let(:default) { "default value" }
 
           subject { described_class.get!(key, default, scope: invalid) }

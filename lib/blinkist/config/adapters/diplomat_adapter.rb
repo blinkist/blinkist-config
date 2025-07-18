@@ -10,7 +10,7 @@ module Blinkist
         @items_cache = {}
       end
 
-      def get(key, default=nil, scope: nil, refetch: false)
+      def get(key, default = nil, scope: nil, refetch: false)
         scope ||= @app_name
 
         diplomat_key = "#{scope}/#{key}"
