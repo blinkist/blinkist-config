@@ -1,0 +1,43 @@
+name: Version guard
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  version-guard:
+    name: Ensure version bump
+    runs-on: ubuntu-latest
+    env:
+      BASE_REF: ${{ github.event.pull_request.base.ref }}
+      VERSION_FILE: lib/blinkist/config/version.rb
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compare version against base
+        run: |
+          git fetch origin "$BASE_REF" --quiet
+          extract() { grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1; }
+          base="$(git show "origin/$BASE_REF:$VERSION_FILE" | extract)"
+          head="$(extract < "$VERSION_FILE")"
+          echo "base ($BASE_REF): $base"
+          echo "head (this PR):  $head"
+
+          if [ "$base" = "$head" ]; then
+            echo "::error file=$VERSION_FILE::Version not bumped. Update VERSION in $VERSION_FILE."
+            exit 1
+          fi
+
+          highest="$(printf '%s\n%s\n' "$base" "$head" | sort -V | tail -1)"
+          if [ "$highest" != "$head" ]; then
+            echo "::error file=$VERSION_FILE::Version $head is not greater than main's $base. Rebase and bump above $base."
+            exit 1
+          fi
+
+          echo "Version bump OK: $base -> $head"
