@@ -154,6 +154,15 @@ describe Blinkist::Config do
       end
     end
 
+    context "with :env_over_ssm adapter type" do
+      let(:adapter_type) { :env_over_ssm }
+
+      it "constructs Blinkist::Config::EnvOverSsmAdapter" do
+        allow(Blinkist::Config::EnvOverSsmAdapter).to receive(:new).and_return(fake_adapter)
+        expect(described_class.adapter).to eq(fake_adapter)
+      end
+    end
+
     context "with :diplomat adapter type" do
       let(:adapter_type) { :diplomat }
 
