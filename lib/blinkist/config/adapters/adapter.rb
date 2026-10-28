@@ -20,6 +20,7 @@ module Blinkist
         end
 
         extend Gem::Deprecate
+
         deprecate :instance_for, :none, 2017, 12
       end
     end

@@ -10,6 +10,7 @@ require_relative "config/error_handlers"
 require_relative "config/adapters/env_adapter"
 require_relative "config/adapters/diplomat_adapter"
 require_relative "config/adapters/aws_ssm_adapter"
+require_relative "config/adapters/env_over_ssm_adapter"
 require_relative "config/adapters"
 
 module Blinkist
@@ -26,6 +27,7 @@ module Blinkist
       end
 
       extend Gem::Deprecate
+
       deprecate :get, "get!", 2017, 12
 
       def get!(key, *args, scope: nil, refetch: false)

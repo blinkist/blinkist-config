@@ -2,26 +2,32 @@ name: CI
 
 on: [push]
 
-jobs:
-  build:
-    name: Run tests
-    runs-on: ubuntu-latest
+permissions:
+  contents: read
 
+jobs:
+  lint:
+    name: StandardRB
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2.8
+          ruby-version: "4.0"
           bundler-cache: true
-          bundler: "2.6.9"
+      - run: bundle exec standardrb
 
-      - name: Bundle Install
-        run: bundle install --jobs=4 --retry=3 --path=vendor/bundle
-
-      - name: Run RSpec
-        env:
-          RAILS_ENV: test
-          RACK_ENV: test
-        run: bundle exec rspec --format progress spec
+  test:
+    name: Test Ruby ${{ matrix.ruby }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ["3.4", "4.0"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - run: bundle exec rspec
