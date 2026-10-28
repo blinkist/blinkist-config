@@ -1,0 +1,68 @@
+version: "3"
+
+tasks:
+  default:
+    desc: List all available tasks
+    cmds:
+      - task --list-all
+    silent: true
+
+  bundle:
+    desc: Bundles the gem in Docker for all supported Ruby versions
+    deps:
+      - bundle:3.4
+      - bundle:4.0
+    # we need stty sane to fix terminal output after running task bundle in parallel
+    cmd: stty sane
+
+  bundle:*:
+    env:
+      RUBY_VERSION: "{{index .MATCH 0}}"
+    cmds:
+      - docker compose run --rm ruby bundle install -j8
+
+  test:
+    desc: Runs tests against all supported Ruby versions
+    cmds:
+      - task: test:3.4
+      - task: test:4.0
+
+  test:local:
+    desc: Runs tests against the default Ruby version
+    cmds:
+      - task: test:4.0
+        vars:
+          CLI_ARGS: "{{.CLI_ARGS}}"
+
+  test:*:
+    env:
+      RUBY_VERSION: "{{index .MATCH 0}}"
+    cmds:
+      - docker compose run --rm ruby bundle exec rspec {{.CLI_ARGS}}
+
+  lint:
+    desc: Runs StandardRB
+    env:
+      RUBY_VERSION: "4.0"
+    cmds:
+      - docker compose run --rm ruby bundle exec standardrb {{.CLI_ARGS}}
+
+  run:
+    desc: Runs an arbitrary command in the default Ruby container
+    env:
+      RUBY_VERSION: "4.0"
+    cmds:
+      - docker compose run --rm ruby {{.CLI_ARGS}}
+
+  shell:
+    desc: Opens a shell in the default Ruby container
+    env:
+      RUBY_VERSION: "4.0"
+    cmds:
+      - docker compose run --rm ruby ash
+
+  docker:clean:
+    desc: Purges local Docker setup
+    cmds:
+      - docker compose down -v --remove-orphans --rmi local
+      - rm -rf .docker-compose/*

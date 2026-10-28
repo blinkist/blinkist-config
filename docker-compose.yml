@@ -1,20 +1,11 @@
 services:
-  rake:
-    entrypoint: bundle exec rake
+  ruby:
+    image: blinkist-config-ruby:${RUBY_VERSION:-4.0}
     build:
       context: .
-    environment:
-      - RAILS_ENV=test
-      - RACK_ENV=test
+      args:
+        RUBY_VERSION: ${RUBY_VERSION:-4.0}
+    tty: true
     volumes:
-      - .:/app
-
-  gem:
-    build:
-      context: .
-    entrypoint: gem
-    volumes:
-      - .:/app
-      - ~/.gitconfig:/nonexistent/.gitconfig
-      - ~/.ssh:/nonexistent/.ssh
-      - ~/.gem:/nonexistent/.gem
+      - ./:/app
+      - .docker-compose/bundle-${RUBY_VERSION:-4.0}:/usr/local/bundle
