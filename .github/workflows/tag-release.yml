@@ -6,11 +6,13 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
-  tag:
-    name: Tag & release
+  release:
+    name: Publish gem & release
     runs-on: ubuntu-latest
+    environment: release
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,12 +34,21 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Create tag & release
+      - uses: ruby/setup-ruby@v1
+        if: steps.exists.outputs.exists == 'false'
+        with:
+          ruby-version: "4.0"
+          bundler-cache: true
+
+      - name: Push gem to rubygems.org
+        if: steps.exists.outputs.exists == 'false'
+        uses: rubygems/release-gem@v1
+
+      - name: Create GitHub release
         if: steps.exists.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create "${{ steps.v.outputs.tag }}" \
-            --target "${{ github.sha }}" \
             --title "${{ steps.v.outputs.tag }}" \
             --generate-notes

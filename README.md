@@ -118,13 +118,7 @@ task shell        # open a shell in the container
 ## Release
 
 1. Bump `VERSION` in `lib/blinkist/config/version.rb`. The `version-guard` workflow fails a PR to `main` without a bump.
-2. Merge to `main`. The `tag-release` workflow creates the git tag and the GitHub release.
-3. Push to rubygems.org:
-
-```sh
-task run -- gem build blinkist-config.gemspec
-task run -- gem push blinkist-config-x.y.z.gem
-```
+2. Merge to `main`.
 
 ## License
 
